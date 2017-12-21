@@ -1,0 +1,2 @@
+dygraph, For dates, your strings have to be parseable by Date.parse.
+dygraph, For numbers, your strings have to be parseable by parseFloat.
