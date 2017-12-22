@@ -1,3 +1,4 @@
 from tinydb import TinyDB, Query
 
-db = TinyDB('static/db.json')
+users = TinyDB('static/db/users.json')
+csvs = TinyDB('static/db/csvs.json')

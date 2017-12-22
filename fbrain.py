@@ -1,21 +1,20 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, Blueprint
 from config import db
 
 app = Flask(__name__)
 
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+from crud import *
+import importlib
+crud_names = list(globals().keys())
 
 
-@app.route('/csv/<int:head>:<int:tail>')
-@app.route('/csv/<int:head>:<int:tail>:<int:scale>')
-def csv(head=0, tail=-0, scale=1):
-    return # folan
+for name in crud_names:
+    variable = globals()[name]
+    if isinstance(variable, Blueprint):
+        importlib.import_module('crud.' + name)
+        app.register_blueprint(variable)
 
 
-from uart import start_provide
-start_provide()
-
-app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)
