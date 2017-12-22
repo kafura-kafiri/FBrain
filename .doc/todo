@@ -1,1 +1,14 @@
 remember turn back to ap mode
+
+next commit -
+start tracking
+/-
+now/-
+
+after commit -
+[skip:limit:jump]
+if skip [skip: skip + limit: jump]
+else calculate time, heuristic on index (binary search)
+skip = ['end', 'now', 'num']
+
+خوب اگه من همین حالا رو بخوام فوقش بتونی یه ثانیه بعد رو نشونم بدی
