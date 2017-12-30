@@ -1,32 +1,19 @@
-<html>
-<head>
-<script type="text/javascript" src="{{ url_for( 'static', filename='dygraph/2.1.0/dygraph.js') }}"></script>
-<link rel="stylesheet" href="{{ url_for( 'static', filename='dygraph/2.1.0/dygraph.css') }}" />
-</head>
-<body>
-<div id="graphdiv"></div>
-<script type="text/javascript">
-   var data = [];
-   var t = new Date();
-   for (var i = 10; i >= 0; i--) {
-      var x = new Date(t.getTime() - i * 1000);
-      data.push([x, Math.random()]);
-   }
-
-   var g = new Dygraph(document.getElementById("graphdiv"),
-         data,
-         {
-            //drawPoints: true,
-            //showRoller: true,
-            //valueRange: [0.0, 1.2],
-            //labels: ['Time', 'Random']
-         });
-   setInterval(function() {
-      var x = new Date();  // current time
-      var y = Math.random();
-      data.push([x, y]);
-      g.updateOptions( { 'file': data } );
-   }, 1000);
-</script>
-</body>
-</html>
+{% extends "layout.html" %}
+{% block title %} index {% endblock %}
+{% block body %}
+{% if current_user.is_authenticated %}
+   <div class="ui grid">
+      <div class="ten wide column">
+         {% include 'graph.html' %}
+      </div>
+      <div class="six wide column">
+         {% include 'sum.html' %}
+      </div>
+   </div>
+{% else %}
+   <div class="ui container">
+      <h1 class="ui header">welcome to FBRAIN</h1>
+      <h3 class="ui header green"> @ -R pouria </h3>
+   </div>
+{% endif %}
+{% endblock %}

@@ -1,10 +1,69 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-   <meta charset="UTF-8">
-   <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<h2 class="ui header red">real time values</h2>
+<div id="graphdiv"></div>
+<script type="text/javascript">
+   $(function() {
+      var prev_date = new Date(), t0 = new Date();
+      var SE = 0, A = 0, M = 0;
+      var SE0 = 0, A0 = 0, M0 = 0;
+      function update(csv) {
+         delta = csv['date'] - prev_date;
+         prev_date = csv['date'];
+         A += delta * csv['attention'] / 1000;
+         M += delta * csv['meditation'] / 1000;
+         SE += Math.cbrt(A + M) * csv['attention'] * delta / 1000;
+         var se = (SE - SE0) / (csv['date'] - t0) * 1000;
+         var a = (A - A0) / (csv['date'] - t0) * 1000;
+         var m = (M - M0) / (csv['date'] - t0) * 1000;
+         $('#now').html(tmpl("now_tmpl", {
+                     e: se,
+                     a: a,
+                     m: m,
+                  }));
+         if(csv['date'] - t0 > 1000 * 60 * 15) {
+            $('#past').html(
+               tmpl("past_tmpl", {
+                  e: se,
+                  a: a,
+                  m: m,
+               }) + $('#past').html()
+            );
+            SE0 = SE; A0 = A; M0 = M;
+            t0 = csv['date'];
+         }
+      }
+
+      var data = [];
+      var csvs = [];
+      var t = new Date();
+      for (var i = 20; i >= 0; i--) {
+         var x = new Date(t.getTime() - i * 1000);
+         data.push([x, Math.random() * 100, Math.random() * 100]);
+      }
+
+      var g = new Dygraph(document.getElementById("graphdiv"),
+            data,
+            {
+               rollPeriod: 10,
+               //drawPoints: true,
+               //showRoller: true,
+               //labels: ['Time', 'attention', 'meditation']
+            });
+
+      setInterval(function() {
+         $.post('/csvs/now', function(response) {
+            for(var i=0;i<response.length;i++) {
+               csv = response[i];
+               console.log(csvs);
+               if (csvs.length == 0 || csvs[csvs.length - 1]['date'] != csv['date']) {
+                  csvs.push(csv);
+                  csv['date'] = new Date(csv['date']);
+                  data.push([csv['date'], csv['attention'], csv['meditation']]);
+                  data.shift();
+                  update(csv);
+               }
+            }
+            g.updateOptions( { 'file': data } );
+         })
+      }, 1000);
+   });
+</script>

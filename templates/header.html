@@ -1,10 +1,71 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-   <meta charset="UTF-8">
-   <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<style>
+
+</style>
+<div class="ui fixed blue inverted menu">
+   <div class="ui container">
+      <a href="#" class="item">Home</a>
+      {% if current_user.is_authenticated %}
+         <div style="background-color: rgb(250, 100, 160)" class="ui simple dropdown item right floated">
+            <div class="ui toggle checkbox">
+               <input id="tracker" type="checkbox" name="public">
+               <label>tracker</label>
+            </div>
+         </div>
+         <div class="ui simple dropdown item right floated">
+            {{ current_user.name }}
+            <i class="dropdown icon"></i>
+            <div class="menu">
+               <a class="item" href="/users/logout">
+                  <div class="ui red empty circular label"></div>
+                  Logout
+               </a>
+            </div>
+         </div>
+      {% else %}
+         <div class="ui simple dropdown item right floated">
+            Login
+            <i class="dropdown icon"></i>
+            <div class="menu">
+               <div class="ui left icon input">
+                  <i class="search icon"></i>
+                  <input id="name" type="text" name="search" placeholder="Name...">
+               </div>
+               <div class="divider"></div>
+               <a class="item name_listener" href="/users/login/">
+                  <div class="ui green empty circular label"></div>
+                  Login
+               </a>
+               <a class="item name_listener" href="/users/signup/">
+                  <div class="ui blue empty circular label"></div>
+                  SignUp
+               </a>
+            </div>
+         </div>
+      {% endif %}
+   </div>
+</div>
+<div style="height: 50px"></div>
+<script>
+   $(function() {
+      $('#name').on('input', function() {
+         phrase = $(this).val();
+         $('.name_listener').each(function() {
+            href = $(this).attr('href');
+            index = href.lastIndexOf('/');
+            href = href.substr(0, index + 1);
+            $(this).attr('href', href + phrase);
+         });
+      });
+      $('#tracker').change(function() {
+         if ($(this).is(':checked')) {
+            $.get('/csvs/track', function(response) {
+               console.log(response);
+            });
+         } else {
+            $.get('/csvs/utrack', function(response) {
+               console.log(response);
+            });
+         }
+      });
+   });
+</script>

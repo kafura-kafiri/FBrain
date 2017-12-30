@@ -2,9 +2,18 @@
 <html lang="en">
 <head>
    <meta charset="UTF-8">
-   <title>$Title$</title>
+   <link rel="stylesheet" href="{{ url_for( 'static', filename='semantic/dist/semantic.min.css') }}" />
+   <link rel="stylesheet" href="{{ url_for( 'static', filename='dygraph/2.1.0/dygraph.css') }}" />
+
+
+   <script type="text/javascript" src="{{ url_for( 'static', filename='jquery/3.2.1/jquery.min.js') }}"></script>
+   <script type="text/javascript" src="{{ url_for( 'static', filename='semantic/dist/semantic.min.js') }}"></script>
+   <script type="text/javascript" src="{{ url_for( 'static', filename='dygraph/2.1.0/dygraph.js') }}"></script>
+
+   <title>{% block title %}{% endblock %}</title>
 </head>
-<body>
-$END$
+<body style="font-size:262.5%;">
+{% include 'header.html' %}
+{% block body %}{% endblock %}
 </body>
 </html>
